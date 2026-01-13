@@ -40,7 +40,7 @@ onUnmounted(() => {
                     <div class="flex size-8 items-center justify-center rounded-lg bg-primary text-white group-hover:scale-110 transition-transform">
                         <span class="material-symbols-outlined">play_arrow</span>
                     </div>
-                    <span class="text-xl font-bold tracking-tight text-white">Anistream</span>
+                    <span class="text-xl font-bold tracking-tight text-white">Maidnime</span>
                 </router-link>
 
                 <!-- Navigation Links -->

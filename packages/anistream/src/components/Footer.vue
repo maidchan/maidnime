@@ -6,7 +6,7 @@
                     <div class="flex size-6 items-center justify-center rounded bg-primary text-white text-xs">
                         <span class="material-symbols-outlined text-sm">play_arrow</span>
                     </div>
-                    <span class="text-lg font-bold tracking-tight text-white">Anistream</span>
+                    <span class="text-lg font-bold tracking-tight text-white">Maidnime</span>
                 </div>
                 
                 <div class="flex flex-wrap justify-center gap-8 text-sm text-gray-400">
@@ -28,7 +28,7 @@
             </div>
             
             <div class="mt-8 text-center text-xs text-gray-500">
-                © 2023 Anistream. All rights reserved.
+                © 2026 Maidnime. All rights reserved.
             </div>
         </div>
     </footer>
