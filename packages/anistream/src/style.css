@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+@theme {
+    --color-primary: #7f13ec;
+    --color-primary-hover: #5e0eb0;
+    /* Derived from usage in sidebar */
+    --color-background-light: #f7f6f8;
+    --color-background-dark: #120c19;
+    --color-background-darker: #120c19;
+    --color-surface-dark: #2a1e36;
+    --color-surface-dark-hover: #362744;
+
+    --font-display: "Plus Jakarta Sans", "sans-serif";
+
+    --radius-lg: 0.5rem;
+    --radius-xl: 0.75rem;
+    --radius-full: 9999px;
+}
+
+@layer utilities {
+    .glass-nav {
+        background: rgba(25, 16, 34, 0.8);
+        @apply backdrop-blur-xl border-b border-white/5;
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .text-shadow-sm {
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    }
+}
+
+body {
+    @apply font-display bg-background-light dark:bg-background-dark;
+}
