@@ -13,9 +13,16 @@ RUN npm run build
 
 FROM nginx:stable-alpine
 
+# Install gettext for envsubst
+RUN apk add --no-cache gettext
+
 COPY --from=builder /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/templates/default.conf.template
 
-EXPOSE 80
+# Railway provides PORT environment variable
+ENV PORT=80
 
-CMD ["nginx", "-g", "daemon off;"]
+EXPOSE $PORT
+
+# Use envsubst to replace PORT in nginx config and start nginx
+CMD sh -c "envsubst '\$PORT' < /etc/nginx/templates/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
