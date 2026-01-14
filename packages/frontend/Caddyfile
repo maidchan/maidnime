@@ -1,4 +1,8 @@
-:{$PORT}
+{
+	auto_https off
+}
+
+:3000
 
 root * /app/dist
 encode gzip

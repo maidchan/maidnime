@@ -23,8 +23,23 @@ WORKDIR /app
 COPY Caddyfile .
 COPY --from=builder /app/dist ./dist
 
-# Railway akan inject $PORT saat runtime.
-# Caddyfile sudah menggunakan :{$PORT}, jadi cukup expose port default.
-EXPOSE 8080
+# Set default PORT if not provided (Railway uses 3000 by default)
+ENV PORT=3000
 
-CMD ["caddy", "run", "--config", "Caddyfile", "--adapter", "caddyfile"]
+# Expose port (Railway will inject $PORT env var, typically 3000)
+EXPOSE 3000
+
+# Create startup script that substitutes PORT in Caddyfile
+RUN echo '#!/bin/sh' > /app/start.sh && \
+    echo 'set -e' >> /app/start.sh && \
+    echo 'PORT=${PORT:-3000}' >> /app/start.sh && \
+    echo 'echo "Starting Caddy on port $PORT"' >> /app/start.sh && \
+    echo 'if [ ! -d "/app/dist" ]; then' >> /app/start.sh && \
+    echo '  echo "ERROR: /app/dist directory not found!"' >> /app/start.sh && \
+    echo '  exit 1' >> /app/start.sh && \
+    echo 'fi' >> /app/start.sh && \
+    echo 'sed "s/:3000/:$PORT/g" /app/Caddyfile > /tmp/Caddyfile' >> /app/start.sh && \
+    echo 'caddy run --config /tmp/Caddyfile --adapter caddyfile' >> /app/start.sh && \
+    chmod +x /app/start.sh
+
+CMD ["/app/start.sh"]
