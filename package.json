@@ -6,11 +6,11 @@
         "packages/*"
     ],
     "scripts": {
-        "dev": "npm run dev --workspace=packages/maidnime",
+        "dev": "npm run dev --workspace=packages/frontend",
         "dev:backend": "cd packages/backend && go run main.go",
-        "build": "npm run build --workspace=packages/maidnime",
+        "build": "npm run build --workspace=packages/frontend",
         "build:backend": "cd packages/backend && go build -o bin/server main.go",
-        "preview": "npm run preview --workspace=packages/maidnime"
+        "preview": "npm run preview --workspace=packages/frontend"
     },
     "devDependencies": {
         "typescript": "^5.0.0"
