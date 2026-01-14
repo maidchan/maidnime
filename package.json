@@ -6,11 +6,11 @@
         "packages/*"
     ],
     "scripts": {
-        "dev": "npm run dev --workspace=packages/anistream",
+        "dev": "npm run dev --workspace=packages/maidnime",
         "dev:backend": "cd packages/backend && go run main.go",
-        "build": "npm run build --workspace=packages/anistream",
+        "build": "npm run build --workspace=packages/maidnime",
         "build:backend": "cd packages/backend && go build -o bin/server main.go",
-        "preview": "npm run preview --workspace=packages/anistream"
+        "preview": "npm run preview --workspace=packages/maidnime"
     },
     "devDependencies": {
         "typescript": "^5.0.0"
