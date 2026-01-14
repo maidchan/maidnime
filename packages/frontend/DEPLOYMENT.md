@@ -1,85 +1,159 @@
-# Deployment Guide - Railway
+# Frontend Deployment Guide - Railway
 
-## Masalah yang Ditemukan
-Website menampilkan **Error 502 Bad Gateway** karena:
-1. Railway menggunakan PORT dinamis (bukan port 80 yang hardcoded)
-2. Nginx tidak dikonfigurasi untuk menggunakan environment variable PORT dari Railway
+## 📋 Persiapan
 
-## Solusi yang Diterapkan
+Pastikan Anda sudah:
+- [x] Push code ke GitHub repository
+- [x] Memiliki akun Railway
+- [x] Backend sudah deploy dan berjalan
 
-### 1. Update Dockerfile
-- Menambahkan `gettext` package untuk `envsubst` command
-- Menggunakan template nginx config yang akan di-replace dengan PORT dinamis
-- Menggunakan environment variable `$PORT` dari Railway
+## 🚀 Deploy ke Railway
 
-### 2. Update nginx.conf
-- Mengganti `listen 80;` dengan `listen $PORT;`
-- File ini sekarang menjadi template yang akan diproses oleh `envsubst`
+### 1. Buat Service Baru di Railway
 
-### 3. Menambahkan railway.json
-- Konfigurasi eksplisit untuk Railway agar menggunakan Dockerfile
+1. Login ke [Railway.app](https://railway.app)
+2. Pilih project atau buat project baru
+3. Click **New Service** → **GitHub Repo**
+4. Pilih repository `maidnime`
 
-## Langkah Deploy ke Railway
+### 2. Konfigurasi Service Frontend
 
-### Opsi 1: Redeploy dari Dashboard Railway
-1. Buka Railway Dashboard: https://railway.app/dashboard
-2. Pilih project `maidnime-frontend-production`
-3. Klik tab "Settings"
-4. Scroll ke bawah dan klik "Redeploy" atau "Trigger Deploy"
-5. Tunggu build selesai (biasanya 2-5 menit)
+#### **A. Set Root Directory**
+Karena ini monorepo, Railway perlu tahu di mana folder frontend:
 
-### Opsi 2: Push ke Git (Jika terhubung dengan GitHub)
-```bash
-cd /home/maidchan/Devs/AI/maidnime
-git add packages/frontend/Dockerfile packages/frontend/nginx.conf packages/frontend/railway.json packages/frontend/.dockerignore
-git commit -m "fix: Railway deployment - support dynamic PORT"
-git push origin main
+1. Buka service frontend → **Settings**
+2. Scroll ke **Root Directory**
+3. Set ke: `packages/frontend`
+4. Click **Save**
+
+#### **B. Set Environment Variables**
+
+Di tab **Variables**, tambahkan:
+
+```
+VITE_API_BASE_URL=https://your-backend-url.railway.app
 ```
 
-Railway akan otomatis mendeteksi perubahan dan melakukan rebuild.
+Ganti `your-backend-url.railway.app` dengan URL backend Railway Anda.
 
-### Opsi 3: Deploy Manual dengan Railway CLI
-```bash
-# Install Railway CLI (jika belum)
-npm i -g @railway/cli
+**PENTING:** Railway akan otomatis set variable `PORT`, jangan di-override!
 
-# Login
-railway login
+#### **C. Deploy Settings**
 
-# Link ke project
-cd packages/frontend
-railway link
+Railway akan otomatis detect Dockerfile. Pastikan:
+- Builder: **Dockerfile** ✅
+- Dockerfile Path: `Dockerfile` (sudah default)
 
-# Deploy
-railway up
+### 3. Deploy
+
+1. Click **Deploy**
+2. Tunggu build process selesai (2-3 menit)
+3. Railway akan generate URL otomatis (misal: `https://maidnime-frontend.up.railway.app`)
+
+## 🔍 Troubleshooting
+
+### ❌ Frontend tidak muncul / 502 Error
+
+**Penyebab:**
+- Container tidak serve file static
+- Port tidak sesuai
+- Build gagal
+
+**Solusi:**
+1. Cek **Logs** di Railway dashboard
+2. Pastikan ada log: `nginx: [notice] start worker processes`
+3. Pastikan PORT environment variable terdeteksi
+
+### ❌ 404 saat refresh page (selain homepage)
+
+**Penyebab:** SPA routing tidak fallback ke index.html
+
+**Solusi:** Sudah di-handle di `nginx.conf` dengan:
+```nginx
+try_files $uri $uri/ /index.html;
 ```
 
-## Environment Variables yang Diperlukan
+### ❌ API call gagal / CORS error
 
-Pastikan di Railway Dashboard sudah ada environment variable:
-- `VITE_API_BASE_URL` - URL backend API (contoh: https://your-backend.railway.app)
+**Penyebab:**
+- Backend tidak allow origin dari frontend domain
+- `VITE_API_BASE_URL` salah
 
-## Verifikasi Deployment
+**Solusi:**
+1. Cek `VITE_API_BASE_URL` di Railway Variables
+2. Pastikan backend CORS allow frontend domain
+3. Rebuil frontend setelah update variable
 
-Setelah deploy selesai:
-1. Cek logs di Railway Dashboard untuk memastikan tidak ada error
-2. Akses https://maidnime-frontend-production.up.railway.app/
-3. Website seharusnya sudah bisa diakses
+### ❌ Assets tidak load (404 on JS/CSS)
 
-## Troubleshooting
+**Penyebab:** Base path tidak sesuai
 
-### Jika masih error 502:
-1. Cek logs di Railway Dashboard
-2. Pastikan build berhasil (tidak ada error saat build)
-3. Pastikan PORT environment variable tersedia
-4. Cek apakah service sudah running dengan status "Active"
+**Solusi:**
+Cek `vite.config.ts`, pastikan:
+```typescript
+export default defineConfig({
+  base: '/', // untuk Railway
+  // ...
+})
+```
 
-### Jika build gagal:
-1. Cek apakah semua dependencies terinstall
-2. Pastikan `package.json` dan `package-lock.json` ada
-3. Cek logs untuk error spesifik
+## 🎯 Verifikasi Deployment Berhasil
 
-### Jika website blank/kosong:
-1. Cek browser console untuk error JavaScript
-2. Pastikan `VITE_API_BASE_URL` sudah diset dengan benar
-3. Cek apakah file di folder `dist` ter-generate dengan benar
+Setelah deploy, test:
+
+1. ✅ **Homepage load** → buka URL Railway
+2. ✅ **Navigation works** → click menu/link
+3. ✅ **Direct URL works** → buka URL langsung (misal `/search`)
+4. ✅ **API calls work** → cek Network tab di DevTools
+5. ✅ **Refresh works** → refresh di halaman selain homepage
+
+## 🔄 Update Deployment
+
+Setelah push ke GitHub:
+1. Railway otomatis detect changes
+2. Auto-rebuild dan deploy
+3. Zero-downtime deployment
+
+## 🆚 Alternatif: Gunakan Caddy (Opsional)
+
+Jika nginx bermasalah, gunakan Caddy yang lebih simpel:
+
+1. Rename `Dockerfile` ke `Dockerfile.nginx` (backup)
+2. Rename `Dockerfile.caddy` ke `Dockerfile`
+3. Redeploy di Railway
+
+Caddy lebih mudah dan otomatis handle HTTPS serta compression.
+
+## 📊 Monitoring
+
+Check logs secara real-time:
+```bash
+# Di Railway Dashboard
+Tab "Deployments" → Click deployment → "View Logs"
+```
+
+Log yang bagus terlihat seperti:
+```
+✓ Built in Xms
+Creating production build...
+nginx: [notice] starting nginx
+```
+
+## 🎨 Custom Domain (Opsional)
+
+1. Buka **Settings** → **Domains**
+2. Click **Add Domain**
+3. Masukkan domain Anda
+4. Set DNS record sesuai instruksi Railway
+5. Tunggu propagasi (5-30 menit)
+
+## 💡 Tips Optimasi
+
+1. **Enable Build Cache:** Railway otomatis cache `node_modules`
+2. **Minimize bundle size:** Sudah optimized di Vite build
+3. **Gzip enabled:** Sudah di nginx.conf
+4. **Asset caching:** Static files cache 1 tahun
+
+---
+
+**Butuh bantuan?** Cek Railway Logs untuk error message detail.

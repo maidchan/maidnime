@@ -1,0 +1,36 @@
+# Build stage
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+# Copy package files
+# Use npm install because repository may not include package-lock.json
+COPY package*.json ./
+RUN npm install
+
+# Copy source files
+COPY . .
+
+# Build argument for API URL
+ARG VITE_API_BASE_URL
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
+
+# Build the app
+RUN npm run build
+
+# Serve stage with Caddy
+FROM caddy:2.7.6-alpine
+
+WORKDIR /app
+
+# Copy Caddyfile
+COPY Caddyfile .
+
+# Copy built files from builder stage
+COPY --from=builder /app/dist ./dist
+
+# Expose port (Railway will set $PORT)
+EXPOSE ${PORT:-8080}
+
+# Start Caddy
+CMD ["caddy", "run", "--config", "Caddyfile", "--adapter", "caddyfile"]
