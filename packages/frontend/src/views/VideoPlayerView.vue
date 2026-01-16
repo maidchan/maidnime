@@ -67,12 +67,12 @@ const qualities = computed(() => {
 </script>
 
 <template>
-  <main class="flex-1 flex justify-center py-6 px-4 md:px-8 lg:px-20 pt-24">
-    <div v-if="loading" class="max-w-[1280px] w-full flex items-center justify-center min-h-[400px]">
+  <main class="flex-1 flex justify-center py-4 md:py-6 px-4 sm:px-6 md:px-8 lg:px-20 pt-20 md:pt-24">
+    <div v-if="loading" class="max-w-[1280px] w-full flex items-center justify-center min-h-[300px] md:min-h-[400px]">
         <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
     </div>
 
-    <div v-else-if="streamData" class="max-w-[1280px] w-full flex flex-col gap-6">
+    <div v-else-if="streamData" class="max-w-[1280px] w-full flex flex-col gap-4 md:gap-6">
       
       <!-- Video Player Section -->
       <VideoPlayer 
@@ -81,10 +81,10 @@ const qualities = computed(() => {
       />
 
       <!-- Metadata & Actions Grid -->
-      <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 lg:gap-10">
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-4 md:gap-6 lg:gap-10">
         
         <!-- Left Column: Title & Server Selection -->
-        <div class="xl:col-span-2">
+        <div class="xl:col-span-2 order-2 xl:order-1">
             <ServerSelector 
                 :anime-title="animeTitle"
                 :episode-title="streamData.title"
@@ -94,33 +94,33 @@ const qualities = computed(() => {
         </div>
 
         <!-- Right Column: Actions & Info -->
-        <div class="xl:col-span-1 flex flex-col gap-6">
+        <div class="xl:col-span-1 flex flex-col gap-4 md:gap-6 order-1 xl:order-2">
             <!-- Actions Bar -->
-            <div class="bg-[#241830] rounded-xl p-4 border border-[#362348]">
-                <div class="grid grid-cols-4 gap-2">
-                    <button @click="isLiked = !isLiked" class="flex flex-col items-center gap-2 p-2 rounded-lg hover:bg-[#362348] transition-colors group">
-                        <div class="size-10 rounded-full bg-[#362348] group-hover:bg-primary/20 flex items-center justify-center transition-colors" :class="{ 'bg-primary/20': isLiked }">
-                            <span class="material-symbols-outlined text-white text-[20px] group-hover:text-primary" :class="{ 'text-primary fill-1': isLiked }">thumb_up</span>
+            <div class="bg-[#241830] rounded-xl p-3 md:p-4 border border-[#362348]">
+                <div class="grid grid-cols-4 gap-2 md:gap-3">
+                    <button @click="isLiked = !isLiked" class="flex flex-col items-center gap-1.5 md:gap-2 p-2 rounded-lg hover:bg-[#362348] active:bg-[#362348] transition-colors group min-h-[60px] md:min-h-[70px]">
+                        <div class="size-9 md:size-10 rounded-full bg-[#362348] group-hover:bg-primary/20 flex items-center justify-center transition-colors" :class="{ 'bg-primary/20': isLiked }">
+                            <span class="material-symbols-outlined text-white text-[18px] md:text-[20px] group-hover:text-primary" :class="{ 'text-primary fill-1': isLiked }">thumb_up</span>
                         </div>
-                        <span class="text-xs text-[#ad92c9] font-medium">{{ isLiked ? 'Liked' : 'Like' }}</span>
+                        <span class="text-[10px] md:text-xs text-[#ad92c9] font-medium">{{ isLiked ? 'Liked' : 'Like' }}</span>
                     </button>
-                    <button @click="isSaved = !isSaved" class="flex flex-col items-center gap-2 p-2 rounded-lg hover:bg-[#362348] transition-colors group">
-                        <div class="size-10 rounded-full bg-[#362348] group-hover:bg-primary/20 flex items-center justify-center transition-colors" :class="{ 'bg-primary/20': isSaved }">
-                            <span class="material-symbols-outlined text-white text-[20px] group-hover:text-primary" :class="{ 'text-primary fill-1': isSaved }">bookmark</span>
+                    <button @click="isSaved = !isSaved" class="flex flex-col items-center gap-1.5 md:gap-2 p-2 rounded-lg hover:bg-[#362348] active:bg-[#362348] transition-colors group min-h-[60px] md:min-h-[70px]">
+                        <div class="size-9 md:size-10 rounded-full bg-[#362348] group-hover:bg-primary/20 flex items-center justify-center transition-colors" :class="{ 'bg-primary/20': isSaved }">
+                            <span class="material-symbols-outlined text-white text-[18px] md:text-[20px] group-hover:text-primary" :class="{ 'text-primary fill-1': isSaved }">bookmark</span>
                         </div>
-                        <span class="text-xs text-[#ad92c9] font-medium">{{ isSaved ? 'Saved' : 'Save' }}</span>
+                        <span class="text-[10px] md:text-xs text-[#ad92c9] font-medium">{{ isSaved ? 'Saved' : 'Save' }}</span>
                     </button>
-                    <button @click="handleShare" class="flex flex-col items-center gap-2 p-2 rounded-lg hover:bg-[#362348] transition-colors group">
-                        <div class="size-10 rounded-full bg-[#362348] group-hover:bg-primary/20 flex items-center justify-center transition-colors">
-                            <span class="material-symbols-outlined text-white text-[20px] group-hover:text-primary">share</span>
+                    <button @click="handleShare" class="flex flex-col items-center gap-1.5 md:gap-2 p-2 rounded-lg hover:bg-[#362348] active:bg-[#362348] transition-colors group min-h-[60px] md:min-h-[70px]">
+                        <div class="size-9 md:size-10 rounded-full bg-[#362348] group-hover:bg-primary/20 flex items-center justify-center transition-colors">
+                            <span class="material-symbols-outlined text-white text-[18px] md:text-[20px] group-hover:text-primary">share</span>
                         </div>
-                        <span class="text-xs text-[#ad92c9] font-medium">Share</span>
+                        <span class="text-[10px] md:text-xs text-[#ad92c9] font-medium">Share</span>
                     </button>
-                    <button @click="handleReport" class="flex flex-col items-center gap-2 p-2 rounded-lg hover:bg-[#362348] transition-colors group">
-                        <div class="size-10 rounded-full bg-[#362348] group-hover:bg-red-500/20 flex items-center justify-center transition-colors">
-                            <span class="material-symbols-outlined text-white text-[20px] group-hover:text-red-400">flag</span>
+                    <button @click="handleReport" class="flex flex-col items-center gap-1.5 md:gap-2 p-2 rounded-lg hover:bg-[#362348] active:bg-[#362348] transition-colors group min-h-[60px] md:min-h-[70px]">
+                        <div class="size-9 md:size-10 rounded-full bg-[#362348] group-hover:bg-red-500/20 flex items-center justify-center transition-colors">
+                            <span class="material-symbols-outlined text-white text-[18px] md:text-[20px] group-hover:text-red-400">flag</span>
                         </div>
-                        <span class="text-xs text-[#ad92c9] font-medium">Report</span>
+                        <span class="text-[10px] md:text-xs text-[#ad92c9] font-medium">Report</span>
                     </button>
                 </div>
             </div>
@@ -129,7 +129,7 @@ const qualities = computed(() => {
             <div class="flex flex-col gap-2">
                 <label class="text-[#ad92c9] text-xs font-bold uppercase tracking-wider ml-1">Video Quality</label>
                 <div class="relative">
-                    <select class="w-full appearance-none bg-[#241830] border border-[#362348] text-white py-3 px-4 pr-8 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 cursor-pointer font-medium">
+                    <select class="w-full appearance-none bg-[#241830] border border-[#362348] text-white py-3 px-4 pr-8 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 cursor-pointer font-medium min-h-[44px] text-sm md:text-base">
                         <option v-for="q in qualities" :key="q">{{ q }}</option>
                     </select>
                     <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-white">

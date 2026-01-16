@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import type { Anime } from '../services/api';
+import { apiService, type Anime } from '../services/api';
 
 const props = defineProps<{
     anime?: Anime;
@@ -15,15 +15,38 @@ const image = computed(() => props.anime?.image || 'https://images2.alphacoders.
 const description = computed(() => props.anime?.last_episode ? `Episode Terbaru: ${props.anime.last_episode}` : 'Streaming anime subtitle Indonesia gratis tanpa iklan.');
 const genres = computed(() => props.anime?.genre || ['Action', 'Adventure']);
 
-const watchNow = () => {
-    if (props.anime?.last_episode_id) {
-        router.push(`/watch?id=${props.anime.last_episode_id}`);
-    } else if (props.anime?.id) {
-        if (typeof props.anime.id === 'string' && props.anime.id.includes('episode')) {
-            router.push(`/watch?id=${props.anime.id}`);
-        } else {
+const watchNow = async () => {
+    try {
+        // If we have a last episode id on the prop, prefer it
+        if (props.anime?.last_episode_id) {
+            router.push(`/watch?id=${props.anime.last_episode_id}`);
+            return;
+        }
+
+        // If we have an anime id, fetch latest detail to get the most recent episode id
+        if (props.anime?.id) {
+            // If the id looks like an episode id, navigate directly
+            if (typeof props.anime.id === 'string' && props.anime.id.includes('episode')) {
+                router.push(`/watch?id=${props.anime.id}`);
+                return;
+            }
+
+            // Fetch fresh anime detail to ensure we have the latest update
+            try {
+                const detail = await apiService.getAnimeDetail(String(props.anime.id));
+                if (detail && detail.last_episode_id) {
+                    router.push(`/watch?id=${detail.last_episode_id}`);
+                    return;
+                }
+            } catch (err) {
+                console.error('Failed to fetch anime detail for watch button:', err);
+            }
+
+            // Fallback: navigate to anime page
             router.push(`/anime/${props.anime.id}`);
         }
+    } catch (error) {
+        console.error('watchNow error:', error);
     }
 };
 
@@ -64,8 +87,8 @@ onMounted(() => {
 
         <!-- Content -->
         <div class="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center">
-            <div class="max-w-2xl flex flex-col gap-6 mt-20">
-                <div class="flex items-center gap-3">
+            <div class="max-w-2xl flex flex-col gap-4 md:gap-6 mt-16 md:mt-20">
+                <div class="flex flex-wrap items-center gap-2 md:gap-3">
                     <span 
                         v-for="genre in genres.slice(0, 3)" 
                         :key="genre"
@@ -75,21 +98,21 @@ onMounted(() => {
                     </span>
                 </div>
                 
-                <h1 class="text-4xl md:text-6xl font-extrabold text-white leading-tight tracking-tight text-shadow-sm" v-html="title.replace(':', ':<br/>')">
+                <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight tracking-tight text-shadow-sm" v-html="title.replace(':', ':<br/>')">
                 </h1>
                 
-                <p class="text-gray-300 text-lg line-clamp-2 md:line-clamp-3 max-w-xl text-shadow-sm">
+                <p class="text-gray-300 text-base md:text-lg line-clamp-2 md:line-clamp-3 max-w-xl text-shadow-sm">
                     {{ description }}
                 </p>
                 
-                <div class="flex items-center gap-4 pt-2">
-                    <button @click="watchNow" class="flex items-center gap-2 bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-lg font-bold transition-transform active:scale-95 shadow-lg shadow-primary/25">
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 md:gap-4 pt-2">
+                    <button @click="watchNow" class="flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white px-6 md:px-8 py-3 rounded-lg font-bold transition-transform active:scale-95 shadow-lg shadow-primary/25 min-h-[44px]">
                         <span class="material-symbols-outlined fill-1">play_arrow</span>
                         Watch Now
                     </button>
                     <button 
                         @click="toggleList"
-                        class="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-lg font-medium backdrop-blur-sm transition-colors border border-white/10"
+                        class="flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white px-5 md:px-6 py-3 rounded-lg font-medium backdrop-blur-sm transition-colors border border-white/10 min-h-[44px]"
                         :class="{ 'text-primary': isInList }"
                     >
                         <span class="material-symbols-outlined" :class="{ 'fill-1': isInList }">{{ isInList ? 'done' : 'add' }}</span>

@@ -75,26 +75,26 @@ const episodes = computed(() => {
         <DetailHero v-bind="animeData" />
 
         <!-- Content Section -->
-        <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        <div class="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-12">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 lg:gap-12">
             <!-- Main Column (Left) -->
-            <div class="lg:col-span-8 space-y-12">
+            <div class="lg:col-span-8 space-y-8 md:space-y-12 order-2 lg:order-1">
                 <!-- Mobile Poster -->
-                <div class="md:hidden w-full flex gap-4 mb-8">
-                    <div class="w-32 aspect-2/3 rounded-lg overflow-hidden shrink-0 shadow-lg border border-white/10">
+                <div class="md:hidden w-full flex gap-4 mb-6">
+                    <div class="w-28 sm:w-32 aspect-2/3 rounded-lg overflow-hidden shrink-0 shadow-lg border border-white/10">
                         <img :src="animeData.poster" :alt="animeData.title" class="w-full h-full object-cover" />
                     </div>
                     <div class="flex flex-col justify-center gap-2">
-                        <div class="text-sm text-gray-400">Studio {{ animeData.studio }}</div>
-                        <div class="text-sm text-gray-400">{{ animeData.aired }}</div>
+                        <div class="text-xs sm:text-sm text-gray-400">Studio {{ animeData.studio }}</div>
+                        <div class="text-xs sm:text-sm text-gray-400">{{ animeData.aired }}</div>
                     </div>
                 </div>
 
                 <!-- Synopsis -->
                 <section>
-                    <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">Synopsis</h3>
-                    <div class="bg-surface-dark/50 p-6 rounded-xl border border-white/5">
-                        <p class="text-gray-300 leading-relaxed">{{ animeData.description }}</p>
+                    <h3 class="text-lg md:text-xl font-bold text-white mb-3 md:mb-4 flex items-center gap-2">Synopsis</h3>
+                    <div class="bg-surface-dark/50 p-4 md:p-6 rounded-xl border border-white/5">
+                        <p class="text-gray-300 leading-relaxed text-sm md:text-base">{{ animeData.description }}</p>
                     </div>
                 </section>
 
@@ -103,7 +103,7 @@ const episodes = computed(() => {
             </div>
 
             <!-- Sidebar (Right) -->
-            <div class="lg:col-span-4 space-y-8">
+            <div class="lg:col-span-4 space-y-6 md:space-y-8 order-1 lg:order-2">
                 <InfoSidebar v-bind="animeData" />
             </div>
         </div>

@@ -53,8 +53,8 @@ onMounted(() => {
     </div>
 
     <!-- Hero Content -->
-    <div class="relative h-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-end pb-12 pt-24">
-      <div class="flex flex-col md:flex-row gap-8 items-end">
+    <div class="relative h-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-end pb-8 md:pb-12 pt-20 md:pt-24">
+      <div class="flex flex-col md:flex-row gap-6 md:gap-8 items-end">
         <!-- Poster Card (Floating) -->
         <div class="hidden md:block shrink-0 relative group">
           <div class="w-56 lg:w-64 aspect-2/3 rounded-xl overflow-hidden shadow-2xl border-2 border-white/10 relative z-10 transform transition-transform group-hover:scale-[1.02]">
@@ -65,46 +65,46 @@ onMounted(() => {
         </div>
 
         <!-- Info -->
-        <div class="flex-1 space-y-6">
+        <div class="flex-1 space-y-4 md:space-y-6 w-full">
           <!-- Badges -->
           <div class="flex flex-wrap gap-2">
-            <span v-for="g in genre" :key="g" class="px-3 py-1 rounded-full bg-primary/20 border border-primary/30 text-primary-200 text-xs font-bold uppercase tracking-wider">{{ g }}</span>
+            <span v-for="g in genre" :key="g" class="px-2 md:px-3 py-1 rounded-full bg-primary/20 border border-primary/30 text-primary-200 text-xs font-bold uppercase tracking-wider">{{ g }}</span>
           </div>
 
           <!-- Title -->
-          <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight tracking-tight drop-shadow-lg">
+          <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight tracking-tight drop-shadow-lg">
             {{ title }}
           </h1>
 
           <!-- Meta Data -->
-          <div class="flex flex-wrap items-center gap-4 text-sm md:text-base text-gray-300 font-medium">
+          <div class="flex flex-wrap items-center gap-2 md:gap-4 text-xs sm:text-sm md:text-base text-gray-300 font-medium">
             <div class="flex items-center text-yellow-400 gap-1">
-              <span class="material-symbols-outlined text-lg fill-current">star</span>
+              <span class="material-symbols-outlined text-base md:text-lg fill-current">star</span>
               <span class="font-bold text-white">{{ rating }}</span>
             </div>
-            <span class="w-1 h-1 rounded-full bg-gray-500"></span>
+            <span class="w-1 h-1 rounded-full bg-gray-500 hidden sm:block"></span>
             <span>{{ year }}</span>
-            <span class="w-1 h-1 rounded-full bg-gray-500"></span>
+            <span class="w-1 h-1 rounded-full bg-gray-500 hidden sm:block"></span>
             <span>{{ episodes }} Episodes</span>
-            <span class="w-1 h-1 rounded-full bg-gray-500"></span>
+            <span class="w-1 h-1 rounded-full bg-gray-500 hidden sm:block"></span>
             <span class="text-green-400">{{ status }}</span>
-            <span class="w-1 h-1 rounded-full bg-gray-500"></span>
+            <span class="w-1 h-1 rounded-full bg-gray-500 hidden sm:block"></span>
             <span class="border border-white/20 px-1.5 rounded text-xs">TV-MA</span>
           </div>
 
           <!-- Actions -->
-          <div class="flex flex-wrap gap-4 pt-2">
-            <router-link :to="latestEpisodeId ? `/watch?id=${latestEpisodeId}` : `/anime/${id}`" class="h-12 px-8 bg-primary hover:bg-primary-hover text-white rounded-lg font-bold flex items-center gap-2 transition-all shadow-lg shadow-primary/25 cursor-pointer">
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 md:gap-4 pt-2">
+            <router-link :to="latestEpisodeId ? `/watch?id=${latestEpisodeId}` : `/anime/${id}`" class="h-12 px-6 md:px-8 bg-primary hover:bg-primary-hover text-white rounded-lg font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-primary/25 cursor-pointer min-h-[44px]">
               <span class="material-symbols-outlined fill">play_arrow</span>
               Watch Now
             </router-link>
-            <a v-if="trailer" :href="trailer" target="_blank" class="h-12 px-8 bg-white/10 hover:bg-white/20 text-white rounded-lg font-bold flex items-center gap-2 backdrop-blur-sm transition-all border border-white/10">
+            <a v-if="trailer" :href="trailer" target="_blank" class="h-12 px-6 md:px-8 bg-white/10 hover:bg-white/20 text-white rounded-lg font-bold flex items-center justify-center gap-2 backdrop-blur-sm transition-all border border-white/10 min-h-[44px]">
               <span class="material-symbols-outlined">movie</span>
               Trailer
             </a>
             <button 
                 @click="toggleList"
-                class="h-12 px-6 bg-white/10 hover:bg-white/20 text-white rounded-lg font-bold flex items-center gap-2 backdrop-blur-sm transition-all border border-white/10"
+                class="h-12 px-5 md:px-6 bg-white/10 hover:bg-white/20 text-white rounded-lg font-bold flex items-center justify-center gap-2 backdrop-blur-sm transition-all border border-white/10 min-h-[44px]"
                 :class="{ 'text-primary': isInList }"
             >
               <span class="material-symbols-outlined" :class="{ 'fill-1': isInList }">{{ isInList ? 'done' : 'add' }}</span>
